@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using ApiEndpoint.Core;
 using ApiEndpoint.Validators;
+using Newtonsoft.Json;
 
 namespace ApiEndpoint
 {
@@ -23,6 +24,8 @@ namespace ApiEndpoint
         private readonly List<HttpClient> _clients;
 
         private Action<string> _logger;
+        private MissingMemberHandling? _missingMemberHandling;
+        private string? _dateFormat;
         private uint _maxRequestsPerSecond;
 
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
@@ -66,7 +69,7 @@ namespace ApiEndpoint
         /// </summary>
         /// <param name="secureToken">The secure token to add to the <see cref="IApiEndpoint"/> instance.</param>
         /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the secure token added.</returns>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="secureToken"/> is null or empty.</exception></exception>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="secureToken"/> is null or empty.</exception>
         public ApiEndpointBuilder AddSecureToken(string secureToken)
         {
             return WithSecureTokens(secureToken);
@@ -95,9 +98,27 @@ namespace ApiEndpoint
             Logger logger = new(_logger);
 
             // Create the request options
-            RequestOptions options = new() { ThrottleRequests = throttle, Logger = logger };
+            RequestOptions options =
+                new()
+                {
+                    DateFormat = _dateFormat,
+                    ThrottleRequests = throttle,
+                    Logger = logger,
+                    MissingMemberHandling = _missingMemberHandling
+                };
 
             return new ApiEndpoint(_clients, options);
+        }
+
+        /// <summary>
+        /// Adds a date format to the <see cref="IApiEndpoint"/> instance.
+        /// </summary>
+        /// <param name="dateFormat">The date format to add to the <see cref="IApiEndpoint"/> instance.</param>
+        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the date format added.</returns>
+        public ApiEndpointBuilder WithDateFormat(string dateFormat)
+        {
+            _dateFormat = dateFormat;
+            return this;
         }
 
         /// <summary>
@@ -108,6 +129,17 @@ namespace ApiEndpoint
         public ApiEndpointBuilder WithLogger(Action<string> logger)
         {
             _logger = logger;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a <see cref="MissingMemberHandling"/> to the <see cref="IApiEndpoint"/> instance.
+        /// </summary>
+        /// <param name="handling">The <see cref="MissingMemberHandling"/> to add to the <see cref="IApiEndpoint"/> instance.</param>
+        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the missing member handling added.</returns>
+        public ApiEndpointBuilder WithMissingMemberHandling(MissingMemberHandling handling)
+        {
+            _missingMemberHandling = handling;
             return this;
         }
 

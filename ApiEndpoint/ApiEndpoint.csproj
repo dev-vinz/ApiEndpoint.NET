@@ -2,13 +2,16 @@
 
 	<PropertyGroup>
 		<PackageId>ApiEndpoint</PackageId>
-		<Version>1.0.0</Version>
-		<Description>Package permettant de construire de requêtes vers une API externe, et de les exécuter.</Description>
+		<Version>1.1.0</Version>
+		<Description>
+			Package for creating API endpoints in .NET, with support for GET, POST, PUT and DELETE methods. Supports JSON and FormData content types, as well as query string parameters, and secure API tokens.
+		</Description>
 		<Authors>!+VinZ+!</Authors>
 		<RepositoryUrl>https://github.com/dev-vinz/ApiEndpoint.NET</RepositoryUrl>
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

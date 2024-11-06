@@ -57,6 +57,12 @@ namespace ApiEndpoint
             return new GetRequest<T>(Client, endpoint, _options);
         }
 
+        public IRequest<T> Post<T>(string endpoint, MessageFormData body)
+            where T : class
+        {
+            return Post<MessageFormData, T>(endpoint, body);
+        }
+
         public IRequest<TOutput> Post<TInput, TOutput>(string endpoint, TInput body)
             where TOutput : class
             where TInput : class
@@ -64,10 +70,10 @@ namespace ApiEndpoint
             return new PostRequest<TInput, TOutput>(Client, endpoint, body, _options);
         }
 
-        public IRequest<T> Post<T>(string endpoint, MessageFormData body)
+        public IRequest<T> Put<T>(string endpoint, MessageFormData body)
             where T : class
         {
-            return Post<MessageFormData, T>(endpoint, body);
+            return Put<MessageFormData, T>(endpoint, body);
         }
 
         public IRequest<TOutput> Put<TInput, TOutput>(string endpoint, TInput body)
@@ -75,12 +81,6 @@ namespace ApiEndpoint
             where TInput : class
         {
             return new PutRequest<TInput, TOutput>(Client, endpoint, body, _options);
-        }
-
-        public IRequest<T> Put<T>(string endpoint, MessageFormData body)
-            where T : class
-        {
-            return Put<MessageFormData, T>(endpoint, body);
         }
     }
 }

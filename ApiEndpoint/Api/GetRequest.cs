@@ -52,7 +52,7 @@ namespace ApiEndpoint.Api
                 if (response.IsSuccessStatusCode)
                 {
                     string data = await response.Content.ReadAsStringAsync();
-                    return MessageSerializer.Deserialize<T>(data);
+                    return MessageSerializer.Deserialize<T>(data, Options);
                 }
                 else
                 {
