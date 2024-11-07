@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Headers;
-using ApiEndpoint.Core;
+﻿using ApiEndpoint.Core;
 using ApiEndpoint.Validators;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace ApiEndpoint
 {
@@ -65,14 +65,15 @@ namespace ApiEndpoint
         \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
         /// <summary>
-        /// Adds a secure token to the <see cref="IApiEndpoint"/> instance.
+        /// Adds a bearer token to the <see cref="IApiEndpoint"/> instance.
         /// </summary>
-        /// <param name="secureToken">The secure token to add to the <see cref="IApiEndpoint"/> instance.</param>
-        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the secure token added.</returns>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="secureToken"/> is null or empty.</exception>
-        public ApiEndpointBuilder AddSecureToken(string secureToken)
+        /// <remarks>The bearer token will be used to create a new <see cref="HttpClient"/> instance.</remarks>
+        /// <param name="bearerToken">The bearer token to add to the <see cref="IApiEndpoint"/> instance.</param>
+        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the bearer token added.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="bearerToken"/> is null or empty.</exception>
+        public ApiEndpointBuilder AddBearerToken(string bearerToken)
         {
-            return WithSecureTokens(secureToken);
+            return WithBearerTokens(bearerToken);
         }
 
         /// <summary>
@@ -108,6 +109,27 @@ namespace ApiEndpoint
                 };
 
             return new ApiEndpoint(_clients, options);
+        }
+
+        /// <summary>
+        /// Adds some bearer tokens to the <see cref="IApiEndpoint"/> instance.
+        /// </summary>
+        /// <remarks>Each bearer token will be used to create a new <see cref="HttpClient"/> instance.</remarks>
+        /// <param name="bearerTokens">The bearer tokens to add to the <see cref="IApiEndpoint"/> instance.</param>
+        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the bearer tokens added.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="bearerTokens"/> is null or empty.</exception>
+        public ApiEndpointBuilder WithBearerTokens(params string[] bearerTokens)
+        {
+            // Validate the bearer tokens
+            TokenValidator.Validate(bearerTokens);
+
+            // Create a client for each bearer token
+            foreach (string bearerToken in bearerTokens)
+            {
+                _clients.Add(CreateBearerClient(bearerToken));
+            }
+
+            return this;
         }
 
         /// <summary>
@@ -155,38 +177,17 @@ namespace ApiEndpoint
             return this;
         }
 
-        /// <summary>
-        /// Adds secure tokens to the <see cref="IApiEndpoint"/> instance.
-        /// </summary>
-        /// <remarks>Each secure token will be used to create a separate <see cref="HttpClient"/> instance.</remarks>
-        /// <param name="secureTokens">The secure tokens to add to the <see cref="IApiEndpoint"/> instance.</param>
-        /// <returns>The <see cref="ApiEndpointBuilder"/> instance with the secure tokens added.</returns>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="secureTokens"/> is null or empty.</exception>
-        public ApiEndpointBuilder WithSecureTokens(params string[] secureTokens)
-        {
-            // Validate the secure tokens
-            TokenValidator.Validate(secureTokens);
-
-            // Create a client for each secure token
-            foreach (string secureToken in secureTokens)
-            {
-                _clients.Add(CreateClient(secureToken));
-            }
-
-            return this;
-        }
-
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
         |*                          PRIVATE METHODS                          *|
         \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-        private HttpClient CreateClient(string secureToken)
+        private HttpClient CreateBearerClient(string bearerToken)
         {
             HttpClient client = new() { BaseAddress = _baseUri };
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 "Bearer",
-                secureToken
+                bearerToken
             );
 
             return client;

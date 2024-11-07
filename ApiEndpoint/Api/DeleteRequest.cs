@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
-using ApiEndpoint.Core;
+﻿using ApiEndpoint.Core;
+using ApiEndpoint.Errors;
 using ApiEndpoint.Serialization;
+using System.Diagnostics;
 
 namespace ApiEndpoint.Api
 {
@@ -51,24 +52,42 @@ namespace ApiEndpoint.Api
 
             try
             {
+                string content = await response.Content.ReadAsStringAsync();
+
                 if (response.IsSuccessStatusCode)
                 {
-                    string data = await response.Content.ReadAsStringAsync();
-                    return MessageSerializer.Deserialize<T>(data, Options);
+                    return MessageSerializer.Deserialize<T>(content, Options);
                 }
                 else
                 {
-                    throw new Exception($"Failed to execute DELETE request to '{Endpoint}'.");
+                    ApiEndpointError error =
+                        new()
+                        {
+                            StatusCode = response.StatusCode,
+                            Message = response.ReasonPhrase,
+                            ErrorContent = content,
+                        };
+
+                    throw new ApiEndpointException(error);
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not ApiEndpointException)
             {
                 Options.Logger.Error(
                     ex,
                     $"Deserialization encountered an error while executing DELETE request to '{Endpoint}'."
                 );
 
-                throw;
+                ApiEndpointError error =
+                    new()
+                    {
+                        StatusCode = response.StatusCode,
+                        Message =
+                            $"Deserialization encountered an error while executing DELETE request to '{Endpoint}'.",
+                        InnerException = ex,
+                    };
+
+                throw new ApiEndpointException(error);
             }
         }
     }
