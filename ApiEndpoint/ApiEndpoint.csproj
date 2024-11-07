@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<PackageId>ApiEndpoint</PackageId>
-		<Version>1.2.1</Version>
+		<Version>1.3.0</Version>
 		<Description>
 			Package for creating API endpoints in .NET, with support for GET, POST, PUT and DELETE methods. Supports JSON and FormData content types, as well as query string parameters, and secure API tokens.
 		</Description>

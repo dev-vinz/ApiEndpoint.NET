@@ -19,7 +19,8 @@ namespace ApiEndpoint.Serialization
             where T : class
         {
             using MemoryStream ms = new(Encoding.UTF8.GetBytes(data));
-            JsonSerializer serializer = new();
+            JsonSerializer serializer =
+                new() { ContractResolver = new InternalSetterContractResolver(), };
 
             if (options.DateFormat != null)
             {
