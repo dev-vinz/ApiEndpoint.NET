@@ -12,7 +12,7 @@
         /// <summary>
         /// Gets the error that occurred when the API endpoint failed.
         /// </summary>
-        public ApiEndpointError? Error { get; }
+        public ApiEndpointError Error { get; } = default!;
 
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
         |*                            CONSTRUCTORS                           *|
