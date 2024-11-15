@@ -1,8 +1,6 @@
-﻿using ApiEndpoint.Core;
-using ApiEndpoint.Errors;
+﻿using System.Net.Http.Headers;
+using ApiEndpoint.Core;
 using ApiEndpoint.Serialization;
-using System.Diagnostics;
-using System.Net.Http.Headers;
 
 namespace ApiEndpoint.Api
 {
@@ -52,60 +50,7 @@ namespace ApiEndpoint.Api
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             }
 
-            Stopwatch watch = Stopwatch.StartNew();
-
-            await Options.ThrottleRequests.WaitAsync().ConfigureAwait(false);
-            Options.Logger.Information($"PUT {Endpoint} throttling {watch.ElapsedMilliseconds}ms.");
-
-            watch.Restart();
-
-            HttpResponseMessage response = await _client.PutAsync(Endpoint, content);
-
-            Options.Logger.Information(
-                $"PUT {Endpoint} {response.StatusCode} {watch.ElapsedMilliseconds}ms."
-            );
-
-            watch.Stop();
-
-            try
-            {
-                string data = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return MessageSerializer.Deserialize<TOutput>(data, Options);
-                }
-                else
-                {
-                    ApiEndpointError error =
-                        new()
-                        {
-                            StatusCode = response.StatusCode,
-                            Message = response.ReasonPhrase,
-                            ErrorContent = data,
-                        };
-
-                    throw new ApiEndpointException(error);
-                }
-            }
-            catch (Exception ex) when (ex is not ApiEndpointException)
-            {
-                Options.Logger.Error(
-                    ex,
-                    $"Deserialization encountered an error while executing PUT request to '{Endpoint}'."
-                );
-
-                ApiEndpointError error =
-                    new()
-                    {
-                        StatusCode = response.StatusCode,
-                        Message =
-                            $"Deserialization encountered an error while executing PUT request to '{Endpoint}'.",
-                        InnerException = ex,
-                    };
-
-                throw new ApiEndpointException(error);
-            }
+            return await ExecuteRequestAsync(() => _client.PutAsync(Endpoint, content), "PUT");
         }
     }
 }

@@ -18,26 +18,29 @@
         |*                            CONSTRUCTORS                           *|
         \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiEndpointException"/> class.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        public ApiEndpointException(string message)
-            : base(message) { }
+        internal ApiEndpointException(string message)
+            : base(message)
+        {
+            // Outputs
+            {
+                Error = new ApiEndpointError() { Message = message };
+            }
+        }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiEndpointException"/> class.
-        /// </summary>
-        /// <param name="message">The message that describes the error.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        public ApiEndpointException(string message, Exception innerException)
-            : base(message, innerException) { }
+        internal ApiEndpointException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+            // Outputs
+            {
+                Error = new ApiEndpointError()
+                {
+                    Message = message,
+                    InnerException = InnerException
+                };
+            }
+        }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApiEndpointException"/> class.
-        /// </summary>
-        /// <param name="error">The error that occurred when the API endpoint failed.</param>
-        public ApiEndpointException(ApiEndpointError error)
+        internal ApiEndpointException(ApiEndpointError error)
             : base(error.Message, error.InnerException)
         {
             // Inputs

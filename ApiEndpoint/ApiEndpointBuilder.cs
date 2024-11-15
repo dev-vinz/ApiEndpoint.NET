@@ -1,7 +1,8 @@
-﻿using ApiEndpoint.Core;
+﻿using System.Net.Http.Headers;
+using ApiEndpoint.Core;
+using ApiEndpoint.Errors;
 using ApiEndpoint.Validators;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 
 namespace ApiEndpoint
 {
@@ -36,14 +37,14 @@ namespace ApiEndpoint
         /// Initializes a new instance of the <see cref="ApiEndpointBuilder"/> class.
         /// </summary>
         /// <param name="baseUri">The base URI of the API.</param>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="baseUri"/> is null or empty.</exception>
+        /// <exception cref="ApiEndpointException">Thrown when <paramref name="baseUri"/> is null or empty.</exception>
         public ApiEndpointBuilder(string baseUri)
         {
             // Validation
             {
                 if (string.IsNullOrEmpty(baseUri))
                 {
-                    throw new ArgumentException("Value cannot be null or empty.", nameof(baseUri));
+                    throw new ApiEndpointException("BaseUri cannot be null or empty.");
                 }
             }
 
