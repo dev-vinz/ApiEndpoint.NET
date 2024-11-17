@@ -92,6 +92,4 @@ jobs:
             - name: 🚀 Push package
               env:
                   GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-              run: dotnet nuget push ./nuget-packages/*.nupkg \
-                  --api-key $GITHUB_TOKEN \
-                  --source https://nuget.pkg.github.com/dev-vinz/index.json
+              run: dotnet nuget push ./nuget-packages/*.nupkg --api-key $GITHUB_TOKEN --source https://nuget.pkg.github.com/dev-vinz/index.json
