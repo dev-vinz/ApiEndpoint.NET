@@ -50,4 +50,4 @@ jobs:
                   name: test-artifacts
 
             - name: 🧪 Run tests
-              run: dotnet test --configuration Release --no-build --verbosity normal
+              run: dotnet test ApiEndpoint.Tests/ApiEndpoint.Tests.csproj --configuration Release --no-build --verbosity normal
