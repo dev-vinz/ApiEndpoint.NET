@@ -24,7 +24,12 @@ jobs:
               run: dotnet restore
 
             - name: 🏗️ Build project
-              run: dotnet build --configuration Release
+              run: dotnet build --configuration Release --output ./bin/Release
+
+            - name: 🔍 Check build output
+              run: |
+                  echo "Listing files in bin/Release:"
+                  ls -R bin/Release
 
             - name: 📦 Upload build artifacts
               uses: actions/upload-artifact@v3
