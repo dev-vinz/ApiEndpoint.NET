@@ -26,7 +26,8 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<!-- Output path for CI/CD pipeline -->
-		<OutputPath>bin/Release</OutputPath>
+		<OutputPath Condition="'$(Configuration)' == 'Release'">bin\Release\</OutputPath>
+
 	</PropertyGroup>
 
 	<!-- Package references -->
