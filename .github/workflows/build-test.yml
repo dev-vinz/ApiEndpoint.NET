@@ -26,11 +26,13 @@ jobs:
             - name: 🏗️ Build solution
               run: dotnet build ApiEndpoint.sln --configuration Release
 
-            - name: 📦 Upload test artifacts
+            - name: 📦 Upload build artifacts
               uses: actions/upload-artifact@v3
               with:
                   name: test-artifacts
-                  path: ApiEndpoint.Tests/bin/Release/
+                  path: |
+                      **/bin/Release/
+                  if-no-files-found: error
 
     test:
         runs-on: ubuntu-latest
@@ -44,12 +46,14 @@ jobs:
               with:
                   dotnet-version: 8.0
 
-            - name: 📦 Download test artifacts
+            - name: 📦 Download build artifacts
               uses: actions/download-artifact@v3
               with:
                   name: test-artifacts
 
+            - name: 🔍 Verify downloaded files
+              run: ls -R ./
+
             - name: 🧪 Run tests
               run: |
-                  ls -R ApiEndpoint.Tests/bin/Release/
                   dotnet test ApiEndpoint.Tests/bin/Release/ApiEndpoint.Tests.dll --no-build --verbosity normal
