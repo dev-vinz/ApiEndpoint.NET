@@ -26,11 +26,6 @@ jobs:
             - name: 🏗️ Build project
               run: dotnet build --configuration Release
 
-            - name: 🔍 Check build output
-              run: |
-                  echo "Listing files in bin/Release:"
-                  ls -R bin/Release
-
             - name: 📦 Upload build artifacts
               uses: actions/upload-artifact@v3
               with:
