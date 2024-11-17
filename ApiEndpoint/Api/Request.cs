@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Net;
 using System.Web;
 using ApiEndpoint.Core;
 using ApiEndpoint.Errors;
@@ -37,6 +38,11 @@ namespace ApiEndpoint.Api
         {
             // Validation
             {
+                if (endpoint == null)
+                {
+                    throw new ApiEndpointException("Endpoint must not be null.");
+                }
+
                 if (!endpoint.StartsWith('/'))
                 {
                     throw new ApiEndpointException("Endpoint must start with '/' character.");
@@ -135,7 +141,7 @@ namespace ApiEndpoint.Api
                 ApiEndpointError error =
                     new()
                     {
-                        StatusCode = response.StatusCode,
+                        StatusCode = HttpStatusCode.InternalServerError,
                         Message =
                             $"Deserialization encountered an error while executing {method} request to '{Endpoint}'.",
                         InnerException = ex,

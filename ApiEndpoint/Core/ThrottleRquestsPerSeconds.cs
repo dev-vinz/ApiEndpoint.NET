@@ -9,7 +9,7 @@
         private readonly long _delayBetweenCalls;
         private readonly object _lock = new();
 
-        private DateTimeOffset _nextAllowedCall;
+        private long _nextAllowedTicks;
 
         /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
         |*                            CONSTRUCTORS                           *|
@@ -24,7 +24,7 @@
 
             // Tools
             {
-                _nextAllowedCall = DateTimeOffset.UtcNow;
+                _nextAllowedTicks = DateTimeOffset.UtcNow.Ticks;
             }
         }
 
@@ -34,39 +34,28 @@
 
         public Task WaitAsync()
         {
-            DateTimeOffset nextAllowedCall = GetAndUpdateNextAllowedCall();
-            TimeSpan delay = nextAllowedCall - DateTimeOffset.UtcNow;
+            TimeSpan delay;
 
-            if (delay > TimeSpan.Zero)
-            {
-                return Task.Delay(delay);
-            }
-            else
-            {
-                return Task.CompletedTask;
-            }
-        }
-
-        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
-        |*                          PRIVATE METHODS                          *|
-        \* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-        private DateTimeOffset GetAndUpdateNextAllowedCall()
-        {
             lock (_lock)
             {
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-                DateTimeOffset nextAllowedCall = _nextAllowedCall;
+                long currentTicks = DateTimeOffset.UtcNow.Ticks;
 
-                if (nextAllowedCall < now)
+                if (_nextAllowedTicks <= currentTicks)
                 {
-                    nextAllowedCall = now;
+                    // If no waiting is needed, move the next allowed time forward
+                    _nextAllowedTicks = currentTicks + _delayBetweenCalls;
+                    delay = TimeSpan.Zero;
                 }
-
-                _nextAllowedCall = nextAllowedCall.AddTicks(_delayBetweenCalls);
-
-                return nextAllowedCall;
+                else
+                {
+                    // Calculate the required delay and update the next allowed time
+                    delay = TimeSpan.FromTicks(_nextAllowedTicks - currentTicks);
+                    _nextAllowedTicks += _delayBetweenCalls;
+                }
             }
+
+            // Wait if delay is required
+            return delay > TimeSpan.Zero ? Task.Delay(delay) : Task.CompletedTask;
         }
     }
 }

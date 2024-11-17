@@ -41,7 +41,9 @@ namespace ApiEndpoint.Api
             {
                 // Handle multi-part form data
                 content = formData;
-                content.Headers.ContentType = new MediaTypeHeaderValue("multipart/form-data");
+                content.Headers.ContentDisposition = formData.Headers.ContentDisposition;
+                content.Headers.ContentLength = formData.Headers.ContentLength;
+                content.Headers.ContentType = formData.Headers.ContentType;
             }
             else
             {

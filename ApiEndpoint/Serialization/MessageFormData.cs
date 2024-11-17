@@ -14,9 +14,11 @@
         /// </summary>
         /// <param name="key">The key of the field.</param>
         /// <param name="value">The value of the field.</param>
-        public void AddField(string key, string value)
+        /// <returns>The form data.</returns>
+        public MessageFormData AddField(string key, string value)
         {
             Add(new StringContent(value), key);
+            return this;
         }
 
         /// <summary>
@@ -25,9 +27,11 @@
         /// <param name="key">The key of the file.</param>
         /// <param name="data">The data of the file.</param>
         /// <param name="fileName">The name of the file.</param>
-        public void AddFile(string key, byte[] data, string fileName)
+        /// <returns>The form data.</returns>
+        public MessageFormData AddFile(string key, byte[] data, string fileName)
         {
             Add(new ByteArrayContent(data), key, fileName);
+            return this;
         }
 
         /// <summary>
@@ -36,9 +40,11 @@
         /// <param name="key">The key of the file.</param>
         /// <param name="stream">The stream of the file.</param>
         /// <param name="fileName">The name of the file.</param>
-        public void AddFile(string key, Stream stream, string fileName)
+        /// <returns>The form data.</returns>
+        public MessageFormData AddFile(string key, Stream stream, string fileName)
         {
             Add(new StreamContent(stream), key, fileName);
+            return this;
         }
 
         /// <summary>
@@ -46,9 +52,11 @@
         /// </summary>
         /// <param name="key">The key of the file.</param>
         /// <param name="fileInfo">The file information of the file.</param>
-        public void AddFile(string key, FileInfo fileInfo)
+        /// <returns>The form data.</returns>
+        public MessageFormData AddFile(string key, FileInfo fileInfo)
         {
             Add(new StreamContent(fileInfo.OpenRead()), key, fileInfo.Name);
+            return this;
         }
     }
 }
