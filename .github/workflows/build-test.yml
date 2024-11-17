@@ -52,7 +52,9 @@ jobs:
                   name: test-artifacts
 
             - name: 🔍 Verify downloaded files
-              run: ls -R ./
+              run: |
+                  pwd
+                  ls -R ./
 
             - name: 🧪 Run tests
               run: |
