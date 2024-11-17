@@ -30,8 +30,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: test-artifacts
-                  path: |
-                      ApiEndpoint.Tests/bin/Release/net8.0/
+                  path: ApiEndpoint.Tests/bin/Release/net8.0/
                   if-no-files-found: error
 
     test:
@@ -50,6 +49,11 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: test-artifacts
+
+            - name: 🔍 Verify downloaded files
+              run: |
+                  pwd
+                  ls -R ./
 
             - name: 🧪 Run tests
               run: |
