@@ -1,4 +1,4 @@
-name: 🚢 Build, Test & Deploy Package
+name: 🚀 Build, Test & Deploy Package
 
 on:
     push:
@@ -18,10 +18,24 @@ jobs:
                   dotnet-version: 8.0
 
             - name: 🔄 Restore dependencies
-              run: dotnet restore
+              run: dotnet restore ApiEndpoint.sln
 
-            - name: 🏗️ Build project
-              run: dotnet build --configuration Release
+            - name: 🏗️ Build solution
+              run: dotnet build ApiEndpoint.sln --configuration Release
+
+            - name: 📦 Upload main build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: main-build-artifacts
+                  path: ApiEndpoint/bin/Release/net8.0/
+                  if-no-files-found: error
+
+            - name: 📦 Upload test artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-artifacts
+                  path: ApiEndpoint.Tests/bin/Release/net8.0/
+                  if-no-files-found: error
 
     test:
         runs-on: ubuntu-latest
@@ -35,13 +49,13 @@ jobs:
               with:
                   dotnet-version: 8.0
 
-            - name: 📦 Download build artifacts
-              uses: actions/download-artifact@v3
+            - name: 📦 Download test artifacts
+              uses: actions/download-artifact@v4
               with:
-                  name: build-artifacts
+                  name: test-artifacts
 
             - name: 🧪 Run tests
-              run: dotnet test --configuration Release --no-build --verbosity normal
+              run: dotnet test ApiEndpoint.Tests.dll --no-build --verbosity normal
 
     deploy:
         runs-on: ubuntu-latest
@@ -55,6 +69,11 @@ jobs:
               with:
                   dotnet-version: 8.0
 
+            - name: 📦 Download main build artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: main-build-artifacts
+
             - name: 🔍 Extract version from tag
               id: get-version
               run: |
@@ -62,7 +81,7 @@ jobs:
                   echo "Extracted version: ${{ env.VERSION }}"
 
             - name: 📦 Pack package
-              run: dotnet pack --configuration Release -p:Version=${{ env.VERSION }} -o ./nuget-packages
+              run: dotnet pack ApiEndpoint.csproj --configuration Release -p:Version=${{ env.VERSION }} -o ./nuget-packages
 
             - name: 🚀 Push package
               env:

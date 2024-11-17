@@ -50,11 +50,5 @@ jobs:
               with:
                   name: test-artifacts
 
-            - name: 🔍 Verify downloaded files
-              run: |
-                  pwd
-                  ls -R ./
-
             - name: 🧪 Run tests
-              run: |
-                  dotnet test ApiEndpoint.Tests.dll --no-build --verbosity normal
+              run: dotnet test ApiEndpoint.Tests.dll --no-build --verbosity normal
