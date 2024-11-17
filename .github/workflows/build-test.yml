@@ -31,7 +31,7 @@ jobs:
               with:
                   name: test-artifacts
                   path: |
-                      **/bin/Release/
+                      ApiEndpoint.Tests/bin/Release/net8.0/
                   if-no-files-found: error
 
     test:
@@ -56,4 +56,4 @@ jobs:
 
             - name: 🧪 Run tests
               run: |
-                  dotnet test ApiEndpoint.Tests/bin/Release/ApiEndpoint.Tests.dll --no-build --verbosity normal
+                  dotnet test ApiEndpoint.Tests/bin/Release/net8.0/ApiEndpoint.Tests.dll --no-build --verbosity normal
