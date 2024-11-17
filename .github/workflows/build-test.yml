@@ -1,4 +1,4 @@
-name: 🚀 Build Package
+name: 🚀 Build & Test Package
 
 on:
     push:
@@ -11,7 +11,6 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-
         steps:
             - name: 📂 Checkout code
               uses: actions/checkout@v3
@@ -32,3 +31,23 @@ jobs:
               with:
                   name: build-artifacts
                   path: bin/Release/
+
+    test:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: 📂 Checkout code
+              uses: actions/checkout@v3
+
+            - name: ⚙️ Set up .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0
+
+            - name: 📦 Download build artifacts
+              uses: actions/download-artifact@v3
+              with:
+                  name: build-artifacts
+
+            - name: 🧪 Run tests
+              run: dotnet test --configuration Release --no-build --verbosity normal

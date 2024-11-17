@@ -1,0 +1,72 @@
+name: 🚢 Build, Test & Deploy Package
+
+on:
+    push:
+        tags:
+            - "v*"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📂 Checkout code
+              uses: actions/checkout@v3
+
+            - name: ⚙️ Set up .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0
+
+            - name: 🔄 Restore dependencies
+              run: dotnet restore
+
+            - name: 🏗️ Build project
+              run: dotnet build --configuration Release
+
+    test:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: 📂 Checkout code
+              uses: actions/checkout@v3
+
+            - name: ⚙️ Set up .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0
+
+            - name: 📦 Download build artifacts
+              uses: actions/download-artifact@v3
+              with:
+                  name: build-artifacts
+
+            - name: 🧪 Run tests
+              run: dotnet test --configuration Release --no-build --verbosity normal
+
+    deploy:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+            - name: 📂 Checkout code
+              uses: actions/checkout@v3
+
+            - name: ⚙️ Set up .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0
+
+            - name: 🔍 Extract version from tag
+              id: get-version
+              run: |
+                  echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                  echo "Extracted version: ${{ env.VERSION }}"
+
+            - name: 📦 Pack package
+              run: dotnet pack --configuration Release -p:Version=${{ env.VERSION }} -o ./nuget-packages
+
+            - name: 🚀 Push package
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+              run: dotnet nuget push ./nuget-packages/*.nupkg \
+                  --api-key $GITHUB_TOKEN \
+                  --source https://nuget.pkg.github.com/dev-vinz/index.json
