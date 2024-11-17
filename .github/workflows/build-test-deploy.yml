@@ -87,7 +87,7 @@ jobs:
                     ls -R ./
 
             - name: 📦 Pack package
-              run: dotnet pack ApiEndpoint.csproj --configuration Release -p:Version=${{ env.VERSION }} -o ./nuget-packages
+              run: dotnet pack ApiEndpoint/ApiEndpoint.csproj --configuration Release -p:Version=${{ env.VERSION }} -o ./nuget-packages
 
             - name: 🚀 Push package
               env:
