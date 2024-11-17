@@ -26,7 +26,7 @@ jobs:
             - name: 🏗️ Build solution
               run: dotnet build ApiEndpoint.sln --configuration Release
 
-            - name: 📦 Upload build artifacts
+            - name: 📦 Upload test artifacts
               uses: actions/upload-artifact@v3
               with:
                   name: test-artifacts
@@ -44,10 +44,12 @@ jobs:
               with:
                   dotnet-version: 8.0
 
-            - name: 📦 Download test project artifacts
+            - name: 📦 Download test artifacts
               uses: actions/download-artifact@v3
               with:
                   name: test-artifacts
 
             - name: 🧪 Run tests
-              run: dotnet test ApiEndpoint.Tests/ApiEndpoint.Tests.csproj --configuration Release --no-build --verbosity normal
+              run: |
+                  ls -R ApiEndpoint.Tests/bin/Release/
+                  dotnet test ApiEndpoint.Tests/bin/Release/ApiEndpoint.Tests.dll --no-build --verbosity normal
