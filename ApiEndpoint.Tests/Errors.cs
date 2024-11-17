@@ -133,6 +133,7 @@ namespace ApiEndpoint.Tests
                 .. Enum.GetValues(typeof(HttpStatusCode))
                        .Cast<int>()
                        .Where(code => code >= 400)
+                       .Distinct()
             ];
         }
     }
