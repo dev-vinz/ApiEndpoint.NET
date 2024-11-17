@@ -27,7 +27,7 @@ jobs:
               run: dotnet build ApiEndpoint.sln --configuration Release
 
             - name: 📦 Upload build artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: test-artifacts
                   path: |
@@ -47,7 +47,7 @@ jobs:
                   dotnet-version: 8.0
 
             - name: 📦 Download build artifacts
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: test-artifacts
 
@@ -58,4 +58,4 @@ jobs:
 
             - name: 🧪 Run tests
               run: |
-                  dotnet test ApiEndpoint.Tests.dll --no-build --verbosity normal
+                  dotnet test --no-build --verbosity normal
