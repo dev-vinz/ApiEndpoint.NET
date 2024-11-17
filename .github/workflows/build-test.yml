@@ -58,4 +58,4 @@ jobs:
 
             - name: 🧪 Run tests
               run: |
-                  dotnet test ApiEndpoint.Tests/bin/Release/net8.0/ApiEndpoint.Tests.dll --no-build --verbosity normal
+                  dotnet test ApiEndpoint.Tests.dll --no-build --verbosity normal
