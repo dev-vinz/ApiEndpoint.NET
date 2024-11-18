@@ -5,6 +5,10 @@ on:
         tags:
             - "v*"
 
+permissions:
+    contents: write
+    packages: write
+
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -91,7 +95,7 @@ jobs:
 
             - name: 🚀 Push package
               env:
-                  GITHUB_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: dotnet nuget push ./nuget-packages/*.nupkg --api-key $GITHUB_TOKEN --source https://nuget.pkg.github.com/dev-vinz/index.json
 
     release:
