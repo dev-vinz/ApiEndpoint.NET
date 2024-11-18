@@ -110,6 +110,12 @@ jobs:
               with:
                   name: nuget-package
 
+            - name: 🔍 Extract version from tag
+              id: get-version
+              run: |
+                  echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                  echo "Extracted version: ${{ env.VERSION }}"
+
             - name: 🏷️ Create GitHub Release
               id: create-release
               uses: actions/create-release@v1
