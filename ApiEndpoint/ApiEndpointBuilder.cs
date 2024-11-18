@@ -1,8 +1,8 @@
-﻿using System.Net.Http.Headers;
-using ApiEndpoint.Core;
+﻿using ApiEndpoint.Core;
 using ApiEndpoint.Errors;
 using ApiEndpoint.Validators;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace ApiEndpoint
 {

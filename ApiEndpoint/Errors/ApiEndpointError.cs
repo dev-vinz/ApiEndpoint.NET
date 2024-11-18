@@ -1,5 +1,5 @@
-﻿using System.Net;
-using ApiEndpoint.Attributes;
+﻿using ApiEndpoint.Attributes;
+using System.Net;
 
 namespace ApiEndpoint.Errors
 {

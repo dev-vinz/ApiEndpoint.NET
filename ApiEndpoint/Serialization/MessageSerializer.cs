@@ -1,7 +1,7 @@
-﻿using System.Text;
-using ApiEndpoint.Core;
+﻿using ApiEndpoint.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 
 namespace ApiEndpoint.Serialization
 {

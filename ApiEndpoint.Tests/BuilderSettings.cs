@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Net;
-using ApiEndpoint.Errors;
+﻿using ApiEndpoint.Errors;
 using ApiEndpoint.Tests.Models;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Net;
 
 namespace ApiEndpoint.Tests
 {

@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using ApiEndpoint.Attributes;
+﻿using ApiEndpoint.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Reflection;
 
 namespace ApiEndpoint.Serialization
 {

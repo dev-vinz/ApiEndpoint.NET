@@ -1,5 +1,5 @@
-﻿using System.Net;
-using ApiEndpoint.Errors;
+﻿using ApiEndpoint.Errors;
+using System.Net;
 
 namespace ApiEndpoint.Tests
 {
